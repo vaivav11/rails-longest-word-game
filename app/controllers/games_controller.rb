@@ -1,12 +1,15 @@
+require 'open-uri'
+require 'json'
+
 class GamesController < ApplicationController
   def new
     @start_time = Time.now
-    @letters = Array.new(5) { ('A'..'Z').to_a.sample }
+    @letters = Array.new(10) { ('A'..'Z').to_a.sample }
   end
 
   def score
     @start_time = Time.parse(params[:start_time])
-    @word = params[:new]
+    @word = params[:user_answer]
     @letters = params[:letter]
     @end_time = Time.now
     @total_time = @end_time - @start_time
@@ -36,7 +39,8 @@ class GamesController < ApplicationController
   end
 
   def english_word?(word)
-    response = open("https://wagon-dictionary.herokuapp.com/#{word}").read
+    url = "https://wagon-dictionary.herokuapp.com/#{word}"
+    response = open(url).read
     json = JSON.parse(response)
     return json['found']
   end
